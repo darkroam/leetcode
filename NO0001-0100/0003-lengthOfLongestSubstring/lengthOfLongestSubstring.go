@@ -44,32 +44,32 @@ func LengthOfLongestSubstring(s string) int {
 	//
 	//func a(s string) int {
 
+	//tmpCount 可以通过 i和tmpStr计算出来
 	var maxStr, maxCount int
-	var tmpStr, tmpCount int
+	var tmpStr int
+	var i int
 	postion := make(map[byte]int, 26)
 
-	for i := 0; i < len(s); i++ {
+	for ; i < len(s); i++ {
 		tmpIdx, ok := postion[s[i]]
 		//三种情况++
 		//字典中没有，重新回到了重复的字符位置，重现的字符不在字符串中
 		if !ok || tmpIdx == i || tmpIdx < tmpStr {
 			postion[s[i]] = i
-			tmpCount++
 			continue
 		}
 
-		if tmpCount > maxCount {
-			maxCount = tmpCount
+		if i-tmpStr > maxCount {
+			maxCount = i - tmpStr
 			maxStr = tmpStr
 		}
 		postion[s[i]] = i   //更新字典最新出现的位置
 		tmpStr = tmpIdx + 1 //重置初始字符串位置为重现重现过的字符下一个位置
-		tmpCount = 1        //字符串重新值1,新字符串肯定是从下一个开始
 		i = tmpIdx + 1      //i重置为字符上一次出现的位置下一个位置，又因为下一个肯定没问题，且循环结束i++，所以实际是从字符冲第二个开始重新开始检查
 	}
 
-	if tmpCount > maxCount {
-		maxCount = tmpCount
+	if i-tmpStr > maxCount {
+		maxCount = i - tmpStr
 		maxStr = tmpStr
 	}
 
