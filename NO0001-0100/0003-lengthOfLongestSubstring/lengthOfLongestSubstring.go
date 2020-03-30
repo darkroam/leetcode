@@ -23,54 +23,39 @@ import "fmt"
 //import "strings"
 
 func LengthOfLongestSubstring(s string) int {
-	//	var maxLength int
-	//	var index [128]int
-	//	var l, r int
-	//	for ; r < len(s); r++ {
-	//		c := int(s[r])
-	//		if index[c] > 0 && index[c] > l {
-	//			if length := r - l; length > maxLength {
-	//				maxLength = length
-	//			}
-	//			l = index[c]
-	//		}
-	//		index[c] = r + 1
-	//	}
-	//	if length := r - l; length > maxLength {
-	//		maxLength = length
-	//	}
-	//	return maxLength
-	//}
-	//
-	//func a(s string) int {
+	//tmpCount(当前扫描的字符串长度) 可以通过i和tmpStr(字符串起始)计算出来
+	//tmpStr 可以替换为l
+	//i 可以替换为r
+	//index[c] == 0 为空
+	//index[c] 记录字符位置偏移量+1,以简化是否存在的判断
 
-	//tmpCount 可以通过 i和tmpStr计算出来
+	//三个优势：
+	//1.没有用map而是直接用[]int，用字符ascii码字索引
+	//2.index值0 为空，记录的值为实际字符编译量+1
+	//3.当发现有重复字符时，l向右边移到该字符下一个，然后继续检查
 	var maxStr, maxCount int
-	var tmpStr int
-	var i int
-	postion := make(map[byte]int, 26)
+	var l, r int
+	var index [128]int
 
-	for ; i < len(s); i++ {
-		tmpIdx, ok := postion[s[i]]
-		//三种情况++
-		//字典中没有，重新回到了重复的字符位置，重现的字符不在字符串中
-		if !ok || tmpIdx == i || tmpIdx < tmpStr {
-			postion[s[i]] = i
-			continue
-		}
+	for ; r < len(s); r++ {
+		c := int(s[r])
 
-		if i-tmpStr > maxCount {
-			maxCount = i - tmpStr
-			maxStr = tmpStr
+		//完全等价于[index[c]==0(第一次记录入表格)||index[c]-1< l(该字符在当前字符之外)]取反
+		//index[c]>0(字符已在表内)&& index[c]>l(该字符在当前字符串内部)
+		if index[c] > 0 && index[c] > l {
+			if r-l > maxCount {
+				maxCount = r - l
+				maxStr = l
+			}
+			l = index[c]
+			//r = l 不需要重新从l开始计算
 		}
-		postion[s[i]] = i   //更新字典最新出现的位置
-		tmpStr = tmpIdx + 1 //重置初始字符串位置为重现重现过的字符下一个位置
-		i = tmpIdx + 1      //i重置为字符上一次出现的位置下一个位置，又因为下一个肯定没问题，且循环结束i++，所以实际是从字符冲第二个开始重新开始检查
+		index[c] = r + 1 //不论什么情况下都需要重置index
 	}
 
-	if i-tmpStr > maxCount {
-		maxCount = i - tmpStr
-		maxStr = tmpStr
+	if r-l > maxCount {
+		maxCount = r - l
+		maxStr = l
 	}
 
 	fmt.Println("result: ", s[maxStr:maxStr+maxCount])
@@ -78,4 +63,4 @@ func LengthOfLongestSubstring(s string) int {
 }
 
 //space: O(1)
-//time : O(n^2)
+//time : O(n)
