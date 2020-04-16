@@ -1,2 +1,2 @@
 # leetcode
-try to solve all lthe eecode problems.
+try to solve all the leetcode problems.
