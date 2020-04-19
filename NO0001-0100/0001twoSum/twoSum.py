@@ -30,12 +30,13 @@ class Solution:
         :type target: int
         :rtype: List[int]
         """
-        for i in range(0,len(nums)-1) :
-            for j in range(i+1,len(nums)) :
-                if nums[i]+nums[j] == target :
-                    return [i,j]
+        ind = {}
+        for i in range(len(nums)) :
+            j = nums[i]
+            if target-j in ind :
+                return [ind[target-j], i]
+            ind[j]=i
         return []
-
 
 if __name__ == '__main__':
     suite = unittest.TestSuite()
