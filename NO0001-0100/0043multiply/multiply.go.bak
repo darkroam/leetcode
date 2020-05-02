@@ -1,0 +1,323 @@
+package multiply
+
+//43. 字符串相乘
+//给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
+//示例 1:
+//	输入: num1 = "2", num2 = "3"
+//	输出: "6"
+//示例 2:
+//	输入: num1 = "123", num2 = "456"
+//	输出: "56088"
+//说明：
+//	num1 和 num2 的长度小于110。
+//	num1 和 num2 只包含数字 0-9。
+//	num1 和 num2 均不以零开头，除非是数字 0 本身。
+//	不能使用任何标准库的大数类型（比如 BigInteger）或直接将输入转换为整数来处理。
+//来源：力扣（LeetCode）
+//链接：https://leetcode-cn.com/problems/string-to-integer-atoi
+//著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+import "fmt"
+import "strconv"
+
+func Multiply(num1 string, num2 string) string {
+	if num1 == "0" || num2 == "0" {
+		return "0"
+	}
+	n, resStr, count1, count2, loop1, loop2 := 9, "", 0, 0, 0, 0
+	if len(num1)%n == 0 {
+		loop1 = len(num1) / n
+	} else {
+		loop1 = len(num1)/n + 1
+	}
+	if len(num2)%n == 0 {
+		loop2 = len(num2) / n
+	} else {
+		loop2 = len(num2)/n + 1
+	}
+
+	for n2 := len(num2) - n; loop2 > 0; n2 -= n {
+		count1 = 0
+		for n1, loop3 := len(num1)-n, loop1; loop3 > 0; n1 -= n {
+			if n1 >= 0 && n2 >= 0 {
+				fmt.Println("x11")
+				a := MyAtoi(num2[n2 : n2+n])
+				b := MyAtoi(num1[n1 : n1+n])
+				fmt.Println(" ", resStr, "+", a, "*", b, "* 10^", count1+count2, " =")
+				fmt.Println(" ", resStr, "|", n2+n, "|", n1+n, " =")
+				if len(resStr) <= count1+count2 {
+					loop := count1 + count2 - len(resStr)
+					for i := 0; i < loop; i++ {
+						resStr = "0" + resStr
+					}
+					resStr = strconv.Itoa(a*b) + resStr
+				} else {
+					resStr = addTwo(resStr[:len(resStr)-count1-count2], strconv.Itoa(a*b)) + resStr[len(resStr)-count1-count2:]
+				}
+				fmt.Println(" ", resStr, " ", a, " ", b, " =")
+			} else if n1+n >= 0 && n2 >= 0 {
+				fmt.Println("x22")
+				a := MyAtoi(num2[n2 : n2+n])
+				b := MyAtoi(num1[:n1+n])
+				fmt.Println(" ", resStr, "+", a, "*", b, "* 10^", count1+count2, " =")
+				fmt.Println(" ", resStr, "|", n2+n, "|", n1+n, " =")
+				if len(resStr) < count1+count2 {
+					loop := count1 + count2 - len(resStr)
+					for i := 0; i < loop; i++ {
+						resStr = "0" + resStr
+					}
+					resStr = strconv.Itoa(a*b) + resStr
+				} else {
+					resStr = addTwo(resStr[:len(resStr)-count1-count2], strconv.Itoa(a*b)) + resStr[len(resStr)-count1-count2:]
+				}
+				fmt.Println(" ", resStr, " ", a, " ", b, " =")
+			} else if n1 >= 0 && n2+n >= 0 {
+				fmt.Println("x22.1")
+				a := MyAtoi(num2[:n2+n])
+				b := MyAtoi(num1[n1 : n1+n])
+				fmt.Println(" ", resStr, "+", a, "*", b, "* 10^", count1+count2, " =")
+				fmt.Println(" ", resStr, "|", n2+n, "|", n1+n, " =")
+				if len(resStr) < count1+count2 {
+					loop := count1 + count2 - len(resStr)
+					for i := 0; i < loop; i++ {
+						resStr = "0" + resStr
+					}
+					resStr = strconv.Itoa(a*b) + resStr
+				} else {
+					resStr = addTwo(resStr[:len(resStr)-count1-count2], strconv.Itoa(a*b)) + resStr[len(resStr)-count1-count2:]
+				}
+				fmt.Println(" ", resStr, " ", a, " ", b, " =")
+			} else if n1+n >= 0 && n2+n >= 0 {
+				fmt.Println("x33")
+				a := MyAtoi(num2[:n2+n])
+				b := MyAtoi(num1[:n1+n])
+				fmt.Println(" ", resStr, "+", a, "*", b, "* 10^", count1+count2, " =")
+				fmt.Println(" ", resStr, "|", n2+n, "|", n1+n, " =")
+				resStr = addTwo(resStr[:len(resStr)-count1-count2], strconv.Itoa(a*b)) + resStr[len(resStr)-count1-count2:]
+				fmt.Println(" ", resStr, " ", a, " ", b, " =")
+			}
+			count1 += n
+			loop3--
+		}
+		count2 += n
+		loop2--
+	}
+	return resStr
+}
+
+func addTwo(num1 string, num2 string) (res string) {
+	n, carry, loop1, loop2 := 18, false, 0, 0
+	fmt.Println("caluate : ", num1, "+", num2)
+	//if len(num2) < len(num1) {
+	//num2, num1 = num1, num2
+	//}
+	if len(num1)%n == 0 {
+		loop1 = len(num1) / n
+	} else {
+		loop1 = len(num1)/n + 1
+	}
+	if len(num2)%n == 0 {
+		loop2 = len(num2) / n
+	} else {
+		loop2 = len(num2)/n + 1
+	}
+	for n2, n1 := len(num2)-n, len(num1)-n; loop1 > 0 || loop2 > 0; {
+		fmt.Println("*00", " n1 ", n1, " n2 ", n2)
+		fmt.Println("*00", " n1 ", n1+n, " n2 ", n2+n)
+		//if n1+n-1 < 0 && !carry {
+		//res = num2[:n2+n] + res
+		//break
+		//}
+		val := 0
+		tmp := ""
+		if carry {
+			val++
+			carry = false
+		}
+		if n1 >= 0 && n2 >= 0 {
+			fmt.Println("*11", num1[n1:n1+n], "+", num2[n2:n2+n])
+			a := MyAtoi(num1[n1 : n1+n])
+			b := MyAtoi(num2[n2 : n2+n])
+			val += a + b
+			tmp = strconv.Itoa(val)
+			fmt.Println("////", val)
+			if len(tmp) < n {
+				loop := n - len(tmp)
+				for i := 0; i < loop; i++ {
+					tmp = "0" + tmp
+				}
+				fmt.Println("---1-----------------")
+			}
+			fmt.Println("\\\\", tmp)
+		} else if n1+n >= 0 && n2 >= 0 {
+			fmt.Println("*22", num1[:n1+n], "+", num2[n2:n2+n])
+			a := MyAtoi(num1[:n1+n])
+			b := MyAtoi(num2[n2 : n2+n])
+			val += a + b
+			tmp = strconv.Itoa(val)
+			fmt.Println("////", val)
+			if len(tmp) < n {
+				loop := n - len(tmp)
+				for i := 0; i < loop; i++ {
+					tmp = "0" + tmp
+				}
+				fmt.Println("---2-----------------")
+			}
+			fmt.Println("\\\\", tmp)
+		} else if n1+n < 0 && n2 >= 0 {
+			fmt.Println("*55.1", num2[n2:n2+n])
+			a := MyAtoi(num2[n2 : n2+n])
+			val += a
+			fmt.Println("////", val)
+			tmp = strconv.Itoa(val)
+			if len(tmp) < n {
+				loop := n - len(tmp)
+				for i := 0; i < loop; i++ {
+					tmp = "0" + tmp
+				}
+				fmt.Println("---5-----------------", val)
+			}
+			fmt.Println("\\\\", tmp)
+		} else if n1 >= 0 && n2+n >= 0 {
+			fmt.Println("*33", num1[n1:n1+n], "+", num2[:n2+n])
+			a := MyAtoi(num1[n1 : n1+n])
+			b := MyAtoi(num2[:n2+n])
+			val += a + b
+			fmt.Println("////", val)
+			tmp = strconv.Itoa(val)
+			if len(tmp) < n {
+				loop := n - len(tmp)
+				for i := 0; i < loop; i++ {
+					tmp = "0" + tmp
+				}
+				fmt.Println("---3-----------------")
+			}
+			fmt.Println("\\\\", tmp)
+		} else if n1 >= 0 && n2+n < 0 {
+			fmt.Println("*66.1", num1[n1:n1+n])
+			a := MyAtoi(num1[n1 : n1+n])
+			val += a
+			fmt.Println("////", val)
+			tmp = strconv.Itoa(val)
+			fmt.Println("@@@@@ ", n, " ", len(tmp))
+			if len(tmp) < n {
+				loop := n - len(tmp)
+				for i := 0; i < loop; i++ {
+					tmp = "0" + tmp
+					fmt.Println("=\\\\", i, " ", n-len(tmp))
+				}
+				fmt.Println("---6-----------------")
+			}
+			fmt.Println("\\\\", tmp)
+		} else if n1+n >= 0 && n2+n >= 0 {
+			fmt.Println("*44", num1[:n1+n], "+", num2[:n2+n])
+			a := MyAtoi(num1[:n1+n])
+			b := MyAtoi(num2[:n2+n])
+			fmt.Println(" [ ] ", a, " ", b, " ", val)
+			val += a + b
+			fmt.Println("////", val)
+			tmp = strconv.Itoa(val)
+			fmt.Println("\\\\", tmp)
+		} else if n1+n < 0 && n2+n >= 0 {
+			fmt.Println("*55", num2[:n2+n])
+			a := MyAtoi(num2[:n2+n])
+			val += a
+			fmt.Println("////", val)
+			tmp = strconv.Itoa(val)
+			fmt.Println("\\\\", tmp)
+		} else if n1+n >= 0 && n2+n < 0 {
+			fmt.Println("*66", num1[:n1+n])
+			a := MyAtoi(num1[:n1+n])
+			val += a
+			fmt.Println("////", val)
+			tmp = strconv.Itoa(val)
+			fmt.Println("\\\\", tmp)
+		}
+		if len(tmp) > n {
+			carry = true
+			tmp = tmp[1:]
+		}
+		res = tmp + res
+		n1 -= n
+		n2 -= n
+		loop1--
+		loop2--
+	}
+	if carry {
+		res = "1" + res
+	}
+	fmt.Println("res ", res)
+	return res
+}
+
+func MyAtoi(str string) int {
+	var res int64
+	for _, v := range str {
+		res = res<<1 + res<<3 - 48 + int64(v)
+	}
+	return int(res)
+
+}
+
+func multiply(num1 string, num2 string) string {
+	//思路：123*89 = (9*3*1 + 9*2*10 + 9*1*100)*1 + (8*3*1 + 8*2*10 + 8*1*100)*10
+	if num1 == "0" || num2 == "0" {
+		return "0"
+	}
+	resStr, count1, count2 := "", 0, 0
+	for n2 := len(num2) - 1; n2 >= 0; n2-- {
+		count1 = 0
+		for n1 := len(num1) - 1; n1 >= 0; n1-- {
+			tmp := int(num2[n2]-48) * int(num1[n1]-48)
+			a, b := tmp/10, tmp%10
+			if a != 0 {
+				resStr = addTwoString(resStr, string(a+48)+string(b+48), count1+count2)
+			} else {
+				resStr = addTwoString(resStr, string(b+48), count1+count2)
+			}
+			count1++
+		}
+		count2++
+	}
+	return resStr
+}
+
+func addTwoString(num1 string, num2 string, time int) (res string) {
+	carry := false
+	for i := 0; i < time; i++ {
+		num2 = num2 + "0"
+	}
+	if len(num2) < len(num1) {
+		num2, num1 = num1, num2
+	}
+	for n2, n1 := len(num2)-1, len(num1)-1; n2 >= 0 || n1 >= 0; {
+		if n1 < 0 && !carry {
+			res = num2[:n2+1] + res
+			break
+		}
+		val := 0
+		if n1 >= 0 {
+			val = int(num1[n1]-48) + int(num2[n2]-48)
+		} else {
+			val = int(num2[n2] - 48)
+		}
+		if carry {
+			val++
+			carry = false
+		}
+		if val >= 10 {
+			carry = true
+			val -= 10
+		}
+		res = string(val+48) + res
+		n1--
+		n2--
+	}
+	if carry {
+		res = "1" + res
+	}
+	return res
+}
+
+//space: O(?)
+//time : O(?)
